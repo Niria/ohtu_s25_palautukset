@@ -19,7 +19,7 @@ class TestKauppa(unittest.TestCase):
         # tehdään toteutus saldo-metodille
         def varasto_saldo(tuote_id):
             if tuote_id == 1:
-                return 10
+                return 9
 
         # tehdään toteutus hae_tuote-metodille
         def varasto_hae_tuote(tuote_id):
