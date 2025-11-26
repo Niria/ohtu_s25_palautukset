@@ -21,7 +21,7 @@ class TennisGame:
                 return "Deuce"
             else:
                 return self.SCORES[self.scores[self.player1_name]] + "-All"
-        elif self.score_over_thirty():
+        elif self.is_endgame_phase():
             adv_player = self.advantage_of()
 
             if self.score_difference() >= 2:
@@ -39,7 +39,7 @@ class TennisGame:
         if self.scores[self.player1_name] > self.scores[self.player2_name]:
             return self.player1_name
         return self.player2_name
-    def score_over_thirty(self):
+    def is_endgame_phase(self):
         if self.scores[self.player1_name] >= 4 or self.scores[self.player2_name] >= 4:
             return True
         return False
