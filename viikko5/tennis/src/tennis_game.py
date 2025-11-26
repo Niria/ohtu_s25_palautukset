@@ -43,4 +43,3 @@ class TennisGame:
         if self.scores[self.player1_name] >= 4 or self.scores[self.player2_name] >= 4:
             return True
         return False
-    
