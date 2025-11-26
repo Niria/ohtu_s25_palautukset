@@ -30,7 +30,6 @@ class TennisGame:
                 return f"Advantage {adv_player}"
         else:
             return f"{self.SCORES[self.scores[self.player1_name]]}-{self.SCORES[self.scores[self.player2_name]]}"
-    
     def scores_even(self):
         return self.score_difference() == 0
 
