@@ -22,7 +22,7 @@ class TennisGame:
             else:
                 return self.SCORES[self.scores[self.player1_name]] + "-All"
         elif self.score_over_thirty():
-            adv_player = self.advantage_of()
+            adv_player = self.get_leading_player()
 
             if self.score_difference() >= 2:
                 return f"Win for {adv_player}"
@@ -37,7 +37,7 @@ class TennisGame:
     def score_difference(self):
         return abs(self.scores[self.player1_name] - self.scores[self.player2_name])
     
-    def advantage_of(self):
+    def get_leading_player(self):
         if self.scores[self.player1_name] > self.scores[self.player2_name]:
             return self.player1_name
         return self.player2_name
