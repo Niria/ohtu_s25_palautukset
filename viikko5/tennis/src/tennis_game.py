@@ -35,7 +35,6 @@ class TennisGame:
 
     def score_difference(self):
         return abs(self.scores[self.player1_name] - self.scores[self.player2_name])
-    
     def advantage_of(self):
         if self.scores[self.player1_name] > self.scores[self.player2_name]:
             return self.player1_name
