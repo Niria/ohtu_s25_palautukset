@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="fi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Kivi-Paperi-Sakset</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #0f172a;
+      --panel: #111827;
+      --accent: #38bdf8;
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+      --danger: #f87171;
+    }
+    body { background: radial-gradient(circle at 20% 20%, #1e293b, #0f172a 50%); color: var(--text); font-family: "Fira Sans", "Segoe UI", system-ui, sans-serif; margin: 0; min-height: 100vh; display: grid; place-items: center; }
+    .card { background: var(--panel); border: 1px solid #1f2937; border-radius: 14px; padding: 24px; width: min(960px, 94vw); box-shadow: 0 15px 40px rgba(0,0,0,0.35); }
+    h1 { margin: 0 0 8px; letter-spacing: 0.6px; }
+    p.lead { margin: 0 0 16px; color: var(--muted); }
+    form { margin: 12px 0; }
+    label { display: inline-flex; align-items: center; gap: 8px; padding: 10px 14px; border: 1px solid #1f2937; border-radius: 10px; margin-right: 10px; cursor: pointer; transition: border 0.2s, background 0.2s; }
+    input[type="radio"] { accent-color: var(--accent); }
+    label:hover { border-color: var(--accent); }
+    .btn { background: var(--accent); color: #0b1727; border: none; border-radius: 10px; padding: 12px 18px; font-weight: 700; cursor: pointer; transition: transform 0.15s ease, box-shadow 0.15s ease; }
+    .btn:hover { transform: translateY(-1px); box-shadow: 0 10px 24px rgba(56,189,248,0.35); }
+    .btn.secondary { background: transparent; color: var(--text); border: 1px solid #1f2937; }
+    .grid { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+    .panel { background: rgba(255,255,255,0.02); border: 1px solid #1f2937; border-radius: 12px; padding: 16px; }
+    .history { max-height: 240px; overflow: auto; }
+    .notice { margin: 12px 0; padding: 12px 14px; border-radius: 10px; background: rgba(56,189,248,0.08); border: 1px solid rgba(56,189,248,0.35); }
+    .danger { border-color: rgba(248,113,113,0.35); background: rgba(248,113,113,0.08); color: #fecaca; }
+    .field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
+    input[type="text"] { background: #0b1222; border: 1px solid #1f2937; border-radius: 10px; padding: 12px 10px; color: var(--text); }
+    small { color: var(--muted); }
+    .score { font-size: 18px; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Kivi-Paperi-Sakset</h1>
+    <p class="lead">Valitse pelimuoto ja tee siirto: k = kivi, p = paperi, s = sakset.</p>
+
+    {% if not game %}
+      <form action="{{ url_for('start_game') }}" method="post">
+        <div class="field">
+          <strong>Pelimuoto</strong>
+          <div>
+            <label><input type="radio" name="mode" value="human" required /> Ihminen vs ihminen</label>
+            <label><input type="radio" name="mode" value="ai" /> Ihminen vs tekoäly</label>
+            <label><input type="radio" name="mode" value="ai_plus" /> Ihminen vs parannettu tekoäly</label>
+          </div>
+        </div>
+        <button class="btn" type="submit">Aloita peli</button>
+      </form>
+    {% else %}
+      <div class="grid">
+        <div class="panel">
+          <div class="score">{{ game.scoreboard() }}</div>
+          {% if game.message %}
+            <div class="notice {% if game.ended %}danger{% endif %}">{{ game.message }}</div>
+          {% endif %}
+          {% if game.ended %}
+            <form action="{{ url_for('reset') }}" method="post">
+              <button class="btn" type="submit">Uusi peli</button>
+            </form>
+          {% else %}
+            <form action="{{ url_for('play') }}" method="post">
+              <div class="field">
+                <label for="p1_move">Ensimmäisen pelaajan siirto</label>
+                <input id="p1_move" name="p1_move" type="text" maxlength="1" placeholder="k/p/s" required />
+                <small>Kirjoita k, p tai s.</small>
+              </div>
+              {% if game.mode == 'human' %}
+                <div class="field">
+                  <label for="p2_move">Toisen pelaajan siirto</label>
+                  <input id="p2_move" name="p2_move" type="text" maxlength="1" placeholder="k/p/s" required />
+                </div>
+              {% endif %}
+              <div style="display:flex; gap:10px;">
+                <button class="btn" type="submit">Pelaa kierros</button>
+                <button class="btn secondary" type="submit" name="action" value="end">Lopeta peli</button>
+              </div>
+            </form>
+          {% endif %}
+        </div>
+        <div class="panel history">
+          <strong>Kierrokset</strong>
+          {% if not game.history %}
+            <p class="lead">Ei kierroksia vielä.</p>
+          {% else %}
+            <ol>
+            {% for pair in game.history %}
+              <li>Kierros {{ loop.index }}: Pelaaja 1 {{ pair[0] }} vs Pelaaja 2 {{ pair[1] }}</li>
+            {% endfor %}
+            </ol>
+          {% endif %}
+        </div>
+      </div>
+    {% endif %}
+  </div>
+</body>
+</html>
